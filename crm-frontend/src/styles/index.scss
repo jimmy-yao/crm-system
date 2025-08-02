@@ -1,0 +1,168 @@
+// 全局样式文件
+
+// 重置样式
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+// 布局样式
+.layout-container {
+  height: 100vh;
+  
+  .layout-header {
+    background: #fff;
+    border-bottom: 1px solid #e6e6e6;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  }
+  
+  .layout-sidebar {
+    background: #001529;
+    
+    .el-menu {
+      border-right: none;
+    }
+  }
+  
+  .layout-main {
+    background: #f0f2f5;
+    padding: 20px;
+    overflow-y: auto;
+  }
+}
+
+// 页面内容样式
+.page-container {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  .page-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e8e8e8;
+    
+    .page-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #262626;
+    }
+  }
+  
+  .page-content {
+    padding: 24px;
+  }
+}
+
+// 表格样式
+.table-container {
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    
+    .table-title {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .table-actions {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}
+
+// 表单样式
+.form-container {
+  .form-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+}
+
+// 工具类
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+// 状态样式
+.status-active {
+  color: #52c41a;
+}
+
+.status-inactive {
+  color: #ff4d4f;
+}
+
+// 响应式
+@media (max-width: 768px) {
+  .layout-container {
+    .layout-main {
+      padding: 12px;
+    }
+  }
+  
+  .page-container {
+    .page-content {
+      padding: 16px;
+    }
+  }
+  
+  .table-container {
+    .table-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+  }
+}

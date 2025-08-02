@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: CRM Gateway
+    description: CRM系统网关服务
+    version: 1.0.0
+    encoding: UTF-8
+    java:
+      version: 17
+
+logging:
+  level:
+    com.pk.crm: DEBUG
+    org.springframework.security: INFO
