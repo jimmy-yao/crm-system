@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: crm-gateway-service
@@ -6,5 +7,11 @@ spring:
       server-addr: 127.0.0.1:8848
       config:
         file-extension: yaml
+        group: DEFAULT_GROUP
         # If you use a different namespace, uncomment and set the following line
         # namespace: your-namespace-id
+        namespace: public
+  config:
+    import: nacos:${spring.application.name}
+server:
+  port: 8080

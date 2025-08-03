@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JWT认证测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        button { margin: 5px; padding: 8px 16px; }
+    </style>
+</head>
+<body>
+    <h1>JWT认证测试</h1>
+    
+    <div class="section">
+        <h3>1. 测试JWT登录</h3>
+        <button onclick="testJWTLogin()">测试JWT登录</button>
+        <div id="jwtLoginResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h3>2. 测试JWT客户API</h3>
+        <button onclick="testJWTCustomersAPI()">测试JWT客户API</button>
+        <div id="jwtCustomersResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h3>3. 解析JWT Token</h3>
+        <button onclick="parseJWTToken()">解析JWT Token</button>
+        <div id="parseResult" class="result"></div>
+    </div>
+
+    <script>
+        let jwtToken = null;
+
+        async function testJWTLogin() {
+            const resultDiv = document.getElementById('jwtLoginResult');
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: '123456'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    jwtToken = data.token;
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '<h4>JWT登录成功:</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '<h4>JWT登录失败:</h4><p>Status: ' + response.status + '</p><p>' + errorText + '</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>JWT登录错误:</h4><p>' + error.message + '</p>';
+            }
+        }
+
+        async function testJWTCustomersAPI() {
+            const resultDiv = document.getElementById('jwtCustomersResult');
+            
+            if (!jwtToken) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>请先进行JWT登录</h4>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/customers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + jwtToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '<h4>JWT客户API成功:</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '<h4>JWT客户API失败:</h4><p>Status: ' + response.status + '</p><p>' + errorText + '</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>JWT客户API错误:</h4><p>' + error.message + '</p>';
+            }
+        }
+
+        function parseJWTToken() {
+            const resultDiv = document.getElementById('parseResult');
+            
+            if (!jwtToken) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>请先进行JWT登录</h4>';
+                return;
+            }
+            
+            try {
+                // 解析JWT token (注意：这只是解析payload，不验证签名)
+                const parts = jwtToken.split('.');
+                if (parts.length !== 3) {
+                    throw new Error('Invalid JWT format');
+                }
+                
+                const header = JSON.parse(atob(parts[0]));
+                const payload = JSON.parse(atob(parts[1]));
+                
+                const tokenInfo = {
+                    header: header,
+                    payload: payload,
+                    signature: parts[2]
+                };
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = '<h4>JWT Token解析:</h4><pre>' + JSON.stringify(tokenInfo, null, 2) + '</pre>';
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>JWT解析错误:</h4><p>' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

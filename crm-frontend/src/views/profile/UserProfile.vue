@@ -6,12 +6,14 @@
           <span>个人资料</span>
         </div>
       </template>
-      
+
       <div class="profile-content">
         <!-- 头像区域 -->
         <div class="avatar-section">
           <el-avatar :size="120" :src="userInfo.avatar" class="user-avatar">
-            <el-icon><User /></el-icon>
+            <el-icon>
+              <User />
+            </el-icon>
           </el-avatar>
           <el-button type="primary" size="small" @click="handleAvatarUpload" class="upload-btn">
             更换头像
@@ -19,13 +21,7 @@
         </div>
 
         <!-- 基本信息 -->
-        <el-form
-          ref="profileFormRef"
-          :model="userInfo"
-          :rules="rules"
-          label-width="100px"
-          class="profile-form"
-        >
+        <el-form ref="profileFormRef" :model="userInfo" :rules="rules" label-width="100px" class="profile-form">
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="用户名" prop="username">
@@ -66,13 +62,7 @@
           </el-row>
 
           <el-form-item label="个人简介">
-            <el-input
-              v-model="userInfo.bio"
-              type="textarea"
-              :rows="4"
-              :disabled="!isEditing"
-              placeholder="请输入个人简介"
-            />
+            <el-input v-model="userInfo.bio" type="textarea" :rows="4" :disabled="!isEditing" placeholder="请输入个人简介" />
           </el-form-item>
         </el-form>
 
@@ -80,21 +70,29 @@
         <div class="action-buttons">
           <template v-if="!isEditing">
             <el-button type="primary" @click="handleEdit">
-              <el-icon><Edit /></el-icon>
+              <el-icon>
+                <Edit />
+              </el-icon>
               编辑资料
             </el-button>
             <el-button @click="handleChangePassword">
-              <el-icon><Lock /></el-icon>
+              <el-icon>
+                <Lock />
+              </el-icon>
               修改密码
             </el-button>
           </template>
           <template v-else>
             <el-button type="primary" @click="handleSave" :loading="saving">
-              <el-icon><Check /></el-icon>
+              <el-icon>
+                <Check />
+              </el-icon>
               保存
             </el-button>
             <el-button @click="handleCancel">
-              <el-icon><Close /></el-icon>
+              <el-icon>
+                <Close />
+              </el-icon>
               取消
             </el-button>
           </template>
@@ -103,41 +101,16 @@
     </el-card>
 
     <!-- 修改密码对话框 -->
-    <el-dialog
-      v-model="passwordDialogVisible"
-      title="修改密码"
-      width="400px"
-      :before-close="handlePasswordDialogClose"
-    >
-      <el-form
-        ref="passwordFormRef"
-        :model="passwordForm"
-        :rules="passwordRules"
-        label-width="100px"
-      >
+    <el-dialog v-model="passwordDialogVisible" title="修改密码" width="400px" :before-close="handlePasswordDialogClose">
+      <el-form ref="passwordFormRef" :model="passwordForm" :rules="passwordRules" label-width="100px">
         <el-form-item label="原密码" prop="oldPassword">
-          <el-input
-            v-model="passwordForm.oldPassword"
-            type="password"
-            show-password
-            placeholder="请输入原密码"
-          />
+          <el-input v-model="passwordForm.oldPassword" type="password" show-password placeholder="请输入原密码" />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input
-            v-model="passwordForm.newPassword"
-            type="password"
-            show-password
-            placeholder="请输入新密码"
-          />
+          <el-input v-model="passwordForm.newPassword" type="password" show-password placeholder="请输入新密码" />
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input
-            v-model="passwordForm.confirmPassword"
-            type="password"
-            show-password
-            placeholder="请再次输入新密码"
-          />
+          <el-input v-model="passwordForm.confirmPassword" type="password" show-password placeholder="请再次输入新密码" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -155,6 +128,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { User, Edit, Lock, Check, Close } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 
 
@@ -216,7 +191,7 @@ const passwordRules = {
   confirmPassword: [
     { required: true, message: '请确认新密码', trigger: 'blur' },
     {
-      validator: (rule, value, callback) => {
+      validator: (_, value, callback) => {
         if (value !== passwordForm.newPassword) {
           callback(new Error('两次输入的密码不一致'))
         } else {
@@ -231,23 +206,34 @@ const passwordRules = {
 // 获取用户信息
 const getUserInfo = async () => {
   try {
-    // 这里应该调用API获取用户信息
-    // const response = await getUserProfile()
-    // Object.assign(userInfo, response.data)
-    
-    // 模拟数据
-    Object.assign(userInfo, {
-      id: '1',
-      username: 'admin',
-      name: '管理员',
-      email: 'admin@example.com',
-      phone: '13800138000',
-      avatar: '',
-      department: '技术部',
-      position: '系统管理员',
-      bio: '负责系统管理和维护工作'
-    })
-    
+    // 从userStore获取用户信息
+    if (userStore.userInfo) {
+      Object.assign(userInfo, {
+        id: userStore.userInfo.id || '1',
+        username: userStore.userInfo.username || 'admin',
+        name: userStore.userInfo.realName || userStore.userInfo.name || '管理员',
+        email: userStore.userInfo.email || 'admin@example.com',
+        phone: userStore.userInfo.phone || '13800138000',
+        avatar: userStore.userInfo.avatar || '',
+        department: userStore.userInfo.department || '技术部',
+        position: userStore.userInfo.position || '系统管理员',
+        bio: userStore.userInfo.bio || '负责系统管理和维护工作'
+      })
+    } else {
+      // 如果userStore中没有用户信息，使用模拟数据
+      Object.assign(userInfo, {
+        id: '1',
+        username: 'admin',
+        name: '管理员',
+        email: 'admin@example.com',
+        phone: '13800138000',
+        avatar: '',
+        department: '技术部',
+        position: '系统管理员',
+        bio: '负责系统管理和维护工作'
+      })
+    }
+
     // 保存原始信息
     Object.assign(originalUserInfo, userInfo)
   } catch (error) {
@@ -265,13 +251,13 @@ const handleSave = async () => {
   try {
     await profileFormRef.value.validate()
     saving.value = true
-    
+
     // 这里应该调用API更新用户信息
     // await updateUserProfile(userInfo)
-    
+
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     Object.assign(originalUserInfo, userInfo)
     isEditing.value = false
     ElMessage.success('保存成功')
@@ -315,13 +301,13 @@ const handlePasswordSubmit = async () => {
   try {
     await passwordFormRef.value.validate()
     passwordSaving.value = true
-    
+
     // 这里应该调用API修改密码
     // await changePassword(passwordForm)
-    
+
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     passwordDialogVisible.value = false
     handlePasswordDialogClose()
     ElMessage.success('密码修改成功')
@@ -393,12 +379,12 @@ onMounted(() => {
   .profile-container {
     padding: 10px;
   }
-  
+
   .action-buttons {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .action-buttons .el-button {
     width: 200px;
   }

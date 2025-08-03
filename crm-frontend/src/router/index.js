@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { getToken } from '@/utils/auth' // 导入 getToken
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -55,6 +56,12 @@ const routes = [
         name: 'Profile',
         component: () => import('@/views/profile/UserProfile.vue'),
         meta: { title: '个人中心', icon: 'Setting', requiresAuth: true }
+      },
+      {
+        path: 'test',
+        name: 'Test',
+        component: () => import('@/views/test/TestPage.vue'),
+        meta: { title: '测试页面', requiresAuth: true }
       }
     ]
   },
@@ -76,7 +83,16 @@ router.beforeEach(async (to, from, next) => {
   NProgress.start()
 
   const userStore = useUserStore()
-  const token = userStore.token
+  let token = userStore.token // 先从 Pinia store 获取
+
+  // 如果 Pinia store 中没有 token，但 Cookie 中有，则同步到 Pinia store
+  if (!token) {
+    const cookieToken = getToken()
+    if (cookieToken) {
+      userStore.token = cookieToken
+      token = cookieToken // 更新 token 变量
+    }
+  }
 
   if (to.meta.requiresAuth !== false && !token) {
     // 需要登录但没有token，跳转到登录页

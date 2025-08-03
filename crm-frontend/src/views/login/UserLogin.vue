@@ -251,33 +251,8 @@ const handleLogin = async () => {
 
     loading.value = true
 
-    try {
-      // 尝试调用真实的登录API
-      await userStore.login(loginForm)
-    } catch (error) {
-      // 如果API调用失败，使用mock登录（仅用于开发测试）
-      console.log('API登录失败，使用mock登录:', error)
-
-      // Mock登录逻辑
-      if (loginForm.username === 'admin' && loginForm.password === '123456') {
-        // 模拟成功登录
-        userStore.token = 'mock-token-' + Date.now()
-        userStore.userInfo = {
-          id: 1,
-          username: 'admin',
-          realName: '管理员',
-          email: 'admin@example.com',
-          avatar: ''
-        }
-        userStore.roles = ['admin']
-        userStore.permissions = ['*']
-
-        // 保存token到localStorage
-        localStorage.setItem('token', userStore.token)
-      } else {
-        throw new Error('用户名或密码错误')
-      }
-    }
+    // 调用真实的登录API
+    await userStore.login(loginForm)
 
     // 记住密码
     if (rememberMe.value) {

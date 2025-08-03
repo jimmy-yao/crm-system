@@ -26,3 +26,7 @@ logging:
   level:
     com.pk.crm: DEBUG
     org.springframework.security: INFO
+
+jwt:
+  secret: crm-system-jwt-secret-key-2024-very-long-secret-key-for-hmac-sha512-algorithm-security
+  expiration: 86400000 # 24小时，单位毫秒

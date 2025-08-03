@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
-import { getToken } from '@/utils/auth'
 import router from '@/router'
 
 // 创建axios实例
@@ -13,15 +12,19 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   config => {
-    const token = getToken()
-    if (token) {
-      // 使用Basic Auth方式，这里需要根据后端实际情况调整
-      const userStore = useUserStore()
-      if (userStore.userInfo) {
-        // 假设用户名存储在userInfo中，密码使用token（简化处理）
-        const credentials = btoa(`${userStore.userInfo.username}:${token.split('_')[0] || 'admin123'}`)
-        config.headers['Authorization'] = `Basic ${credentials}`
-      }
+    const userStore = useUserStore()
+    
+    console.log('请求拦截器 - URL:', config.url)
+    console.log('请求拦截器 - Token状态:', {
+      hasToken: !!userStore.token
+    })
+    
+    // 如果有token，使用Bearer认证
+    if (userStore.token) {
+      config.headers['Authorization'] = `Bearer ${userStore.token}`
+      console.log('请求拦截器 - 已添加Bearer认证头')
+    } else {
+      console.log('请求拦截器 - 缺少token')
     }
     return config
   },
@@ -46,6 +49,12 @@ service.interceptors.response.use(
   },
   error => {
     console.error('响应错误:', error)
+    console.log('响应错误详情:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data
+    })
     
     let message = '请求失败'
     
@@ -55,6 +64,7 @@ service.interceptors.response.use(
       switch (status) {
         case 401: {
           message = '登录已过期，请重新登录'
+          console.log('401错误 - 触发登录跳转')
           // 清除token并跳转到登录页
           const userStore = useUserStore()
           userStore.logout()

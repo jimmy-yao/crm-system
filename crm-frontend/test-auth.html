@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>认证测试</title>
+</head>
+<body>
+    <h1>CRM认证测试</h1>
+    <button onclick="testLogin()">测试登录</button>
+    <button onclick="testCustomers()">测试客户API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testLogin() {
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                // 存储认证信息
+                window.authData = data;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Login Error: ' + error.message;
+            }
+        }
+
+        async function testCustomers() {
+            if (!window.authData) {
+                document.getElementById('result').innerHTML = '请先登录';
+                return;
+            }
+
+            try {
+                const credentials = btoa('admin:123456');
+                const response = await fetch('http://localhost:8080/api/customers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Basic ' + credentials
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    document.getElementById('result').innerHTML = 'Customers API Error: ' + response.status + ' ' + response.statusText;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Customers Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
