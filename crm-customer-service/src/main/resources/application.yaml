@@ -3,10 +3,10 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/crm_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql5.sqlpub.com:3310/crm_system_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
+    username: crm_db
+    password: XAa4j7dhveN4MSzi
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -16,12 +16,13 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
       connection-test-query: SELECT 1
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
-      mode: always
-      continue-on-error: false
+#  sql:
+#    init:
+#      schema-locations: classpath:schema.sql
+#      data-locations: classpath:data.sql
+#      mode: always
+#      continue-on-error: false
+
 
 mybatis:
   configuration:

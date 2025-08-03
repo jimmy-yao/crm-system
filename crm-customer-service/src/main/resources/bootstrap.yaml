@@ -6,5 +6,9 @@ spring:
       server-addr: 127.0.0.1:8848
       config:
         file-extension: yaml
-        # If you use a different namespace, uncomment and set the following line
-        # namespace: your-namespace-id
+        namespace: public
+        group: DEFAULT_GROUP
+  config:
+    import: nacos:${spring.application.name}
+server:
+  port: 8081

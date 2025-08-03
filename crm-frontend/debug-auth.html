@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRM认证调试工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        button { margin: 5px; padding: 8px 16px; }
+    </style>
+</head>
+<body>
+    <h1>CRM认证调试工具</h1>
+    
+    <div class="section">
+        <h3>1. 测试登录API</h3>
+        <button onclick="testLogin()">测试登录</button>
+        <div id="loginResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h3>2. 测试客户API (Basic Auth)</h3>
+        <button onclick="testCustomersAPI()">测试客户API</button>
+        <div id="customersResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h3>3. 检查前端状态</h3>
+        <button onclick="checkFrontendState()">检查前端状态</button>
+        <div id="frontendResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h3>4. 模拟前端请求</h3>
+        <button onclick="simulateFrontendRequest()">模拟前端请求</button>
+        <div id="simulateResult" class="result"></div>
+    </div>
+
+    <script>
+        let authData = null;
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: '123456'
+                    })
+                });
+                
+                if (response.ok) {
+                    authData = await response.json();
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '<h4>登录成功:</h4><pre>' + JSON.stringify(authData, null, 2) + '</pre>';
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '<h4>登录失败:</h4><p>Status: ' + response.status + '</p><p>' + errorText + '</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>登录错误:</h4><p>' + error.message + '</p>';
+            }
+        }
+
+        async function testCustomersAPI() {
+            const resultDiv = document.getElementById('customersResult');
+            try {
+                const credentials = btoa('admin:123456');
+                const response = await fetch('http://localhost:8080/api/customers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Basic ' + credentials,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '<h4>客户API成功:</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '<h4>客户API失败:</h4><p>Status: ' + response.status + '</p><p>' + errorText + '</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>客户API错误:</h4><p>' + error.message + '</p>';
+            }
+        }
+
+        function checkFrontendState() {
+            const resultDiv = document.getElementById('frontendResult');
+            
+            // 检查Cookie
+            const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+                const [key, value] = cookie.trim().split('=');
+                acc[key] = value;
+                return acc;
+            }, {});
+            
+            // 检查SessionStorage
+            const sessionData = {};
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                sessionData[key] = sessionStorage.getItem(key);
+            }
+            
+            // 检查LocalStorage
+            const localData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                localData[key] = localStorage.getItem(key);
+            }
+            
+            const state = {
+                cookies: cookies,
+                sessionStorage: sessionData,
+                localStorage: localData,
+                authData: authData
+            };
+            
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '<h4>前端状态:</h4><pre>' + JSON.stringify(state, null, 2) + '</pre>';
+        }
+
+        async function simulateFrontendRequest() {
+            const resultDiv = document.getElementById('simulateResult');
+            
+            // 模拟前端的请求方式
+            try {
+                const response = await fetch('http://localhost:3000/api/customers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa('admin:123456'),
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '<h4>前端代理请求成功:</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '<h4>前端代理请求失败:</h4><p>Status: ' + response.status + '</p><p>' + errorText + '</p>';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h4>前端代理请求错误:</h4><p>' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

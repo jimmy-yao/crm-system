@@ -347,7 +347,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private String generateToken(UserDTO user) {
-        // 这里简化处理，实际应该生成JWT token
-        return "token_" + user.getId() + "_" + System.currentTimeMillis();
+        // 生成JWT token
+        // 注意：这里简化处理，实际应该在gateway层生成JWT
+        // 为了保持兼容性，这里仍然返回简单的token格式
+        // JWT的生成将在gateway层的AuthController中处理
+        return "jwt_" + user.getId() + "_" + System.currentTimeMillis();
     }
 }
