@@ -6,11 +6,20 @@
 
 ```
 crm-system-v3/
-├── crm-api-service/      # API接口定义模块
-├── crm-customer-service/ # 客户服务模块
-├── crm-user-service/     # 用户权限服务模块
-├── crm-gateway-service/  # 网关/控制器模块
-└── pom.xml              # 父级Maven配置
+├── crm-backend/          # 后端服务目录(独立Maven工程)
+│   ├── crm-api-service/      # API接口定义模块
+│   ├── crm-customer-service/ # 客户服务模块
+│   ├── crm-user-service/     # 用户权限服务模块
+│   ├── crm-gateway-service/  # 网关/控制器模块
+│   ├── start-backend.bat     # 后端启动脚本(Windows)
+│   ├── start-backend.sh      # 后端启动脚本(Linux/Mac)
+│   ├── README.md             # 后端文档
+│   └── pom.xml              # 后端Maven父配置
+├── crm-frontend/         # 前端Vue应用
+├── database/            # 数据库脚本
+├── docker-compose.yml   # Docker编排文件
+├── START_GUIDE.md       # 启动指南
+└── test-jwt-auth.sh     # JWT认证测试脚本
 ```
 
 ## 技术栈
@@ -60,55 +69,44 @@ crm-system-v3/
 - Docker & Docker Compose
 - MySQL 8.x（可选，使用Docker自动启动）
 
-### 方式一：使用Docker一键启动（推荐）
+### 快速启动
 
-#### 1. 启动所有服务
+详细启动步骤请参考 [START_GUIDE.md](START_GUIDE.md)
+
+#### 1. 启动基础服务
 ```bash
-# Linux/Mac
-./start-services.sh
+# 启动MySQL和Nacos
+docker-compose up -d mysql nacos
 
-# Windows
-start-services.bat
+# 等待服务启动并初始化数据库
+sleep 30
+docker exec -i crm-mysql mysql -uroot -p123456 < database/init.sql
 ```
 
-这将自动启动：
-- MySQL 8.0 数据库
-- Nacos 服务注册中心
-- CRM Customer Service（客户管理服务）
-- CRM User Service（用户权限管理服务）
-- CRM Gateway Service（API网关服务）
+#### 2. 启动后端服务
+```bash
+# Windows
+cd crm-backend
+start-backend.bat
 
-#### 2. 访问服务
+# Linux/Mac
+cd crm-backend
+./start-backend.sh
+```
 
+#### 3. 启动前端服务
+```bash
+cd crm-frontend
+npm install  # 首次运行
+npm run dev
+```
+
+#### 4. 访问服务
+
+- **前端界面**: http://localhost:3000
 - **API文档**: http://localhost:8080/swagger-ui/index.html
 - **健康检查**: http://localhost:8080/actuator/health
 - **Nacos控制台**: http://localhost:8848/nacos (nacos/nacos)
-- **MySQL**: localhost:3306 (root/123456)
-
-### 方式二：手动启动
-
-#### 1. 启动MySQL和Nacos
-```bash
-# 使用Docker Compose启动基础服务
-docker-compose up -d mysql nacos
-```
-
-#### 2. 编译项目
-```bash
-mvn clean compile
-```
-
-#### 3. 启动应用服务
-
-```bash
-# 启动Provider服务
-cd crm-provider
-mvn spring-boot:run
-
-# 启动Gateway服务（新终端）
-cd crm-gateway
-mvn spring-boot:run
-```
 
 ### 方式三：使用本地MySQL
 

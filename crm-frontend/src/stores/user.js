@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { login, getUserInfo } from '@/api/auth'
+import { login } from '@/api/auth'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 export const useUserStore = defineStore('user', {
@@ -31,17 +31,7 @@ export const useUserStore = defineStore('user', {
       return response
     },
 
-    // 获取用户信息
-    async getUserInfo() {
-      const response = await getUserInfo()
-      const { userInfo, roles, permissions } = response.data
-      
-      this.userInfo = userInfo
-      this.roles = roles || []
-      this.permissions = permissions || []
-      
-      return response
-    },
+    
 
     // 登出
     logout() {

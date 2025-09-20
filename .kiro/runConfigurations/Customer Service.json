@@ -1,0 +1,19 @@
+{
+  "name": "Customer Service",
+  "type": "SpringBoot",
+  "factoryName": "Spring Boot",
+  "module": "crm-customer-service",
+  "springBootMainClass": "com.pk.crm.customer.CustomerServiceApplication",
+  "workingDirectory": "$PROJECT_DIR$/crm-backend/crm-customer-service",
+  "jvmArgs": "-Xmx1024m -Xms256m --enable-preview --add-opens=java.base/java.lang=ALL-UNNAMED",
+  "programArgs": "",
+  "environmentVariables": {
+    "SPRING_PROFILES_ACTIVE": "dev"
+  },
+  "vmOptions": "--enable-preview",
+  "alternativeJrePath": "",
+  "enableDebug": true,
+  "debugPort": 5007,
+  "updateActionUpdatePolicy": "UpdateResources",
+  "frameDeactivationUpdatePolicy": "UpdateResources"
+}

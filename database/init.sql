@@ -1,8 +1,11 @@
 -- 创建CRM数据库
-CREATE DATABASE IF NOT EXISTS crm_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS crm_system_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 创建Nacos配置数据库
+CREATE DATABASE IF NOT EXISTS nacos_config CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 使用CRM数据库
-USE crm_db;
+USE crm_system_db;
 
 -- 删除已存在的表（注意外键约束的删除顺序）
 DROP TABLE IF EXISTS role_permissions;

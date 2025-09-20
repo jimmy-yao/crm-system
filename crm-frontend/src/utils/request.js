@@ -37,14 +37,6 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    const res = response.data
-    
-    // 如果返回的状态码不是200，说明接口有问题
-    if (response.status !== 200) {
-      ElMessage.error(res.message || '请求失败')
-      return Promise.reject(new Error(res.message || '请求失败'))
-    }
-    
     return response
   },
   error => {

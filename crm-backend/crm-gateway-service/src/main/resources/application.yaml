@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: CRM Gateway
+    description: CRM系统网关服务
+    version: 1.0.0
+    encoding: UTF-8
+    java:
+      version: 17
+
+logging:
+  level:
+    com.pk.crm: DEBUG
+    org.springframework.security: INFO
+
+jwt:
+  secret: crm-system-jwt-secret-key-2024-very-long-secret-key-for-hmac-sha512-algorithm-security
+  expiration: 86400000 # 24小时，单位毫秒
+
+dubbo:
+  application:
+    name: crm-gateway-service
+  registry:
+    address: nacos://127.0.0.1:8848
+  consumer:
+    timeout: 5000

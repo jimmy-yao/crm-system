@@ -7,19 +7,29 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="crm-gateway-service" />
+        <module name="crm-user-service (1)" />
+        <module name="crm-gateway-service (1)" />
         <module name="crm-api-service" />
         <module name="crm-customer-service" />
-        <module name="crm-user-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="crm-gateway-service" target="21" />
+      <module name="crm-gateway-service (2)" target="21" />
+      <module name="crm-user-service" target="21" />
+      <module name="crm-user-service (2)" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="crm-api-service" options="--enable-preview" />
-      <module name="crm-customer-service" options="--enable-preview" />
+      <module name="crm-api-service" options="" />
+      <module name="crm-customer-service" options="" />
       <module name="crm-gateway-service" options="--enable-preview" />
+      <module name="crm-gateway-service (1)" options="" />
+      <module name="crm-gateway-service (2)" options="--enable-preview" />
       <module name="crm-user-service" options="--enable-preview" />
+      <module name="crm-user-service (1)" options="" />
+      <module name="crm-user-service (2)" options="--enable-preview" />
     </option>
   </component>
 </project>

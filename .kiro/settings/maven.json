@@ -1,0 +1,38 @@
+{
+  "mavenHome": "",
+  "userSettingsFile": "",
+  "localRepository": "",
+  "importingSettings": {
+    "lookForNested": true,
+    "dedicatedModuleDir": "",
+    "importAutomatically": true,
+    "createModulesForAggregators": true,
+    "createModuleGroups": false,
+    "excludeTargetFolder": true,
+    "keepSourceFolders": true,
+    "resolveModulePerSourceSet": true,
+    "useMavenOutput": true
+  },
+  "runnerSettings": {
+    "runMavenInBackground": true,
+    "delegateIDEBuildToMaven": false,
+    "vmOptions": "-Xmx2048m -Xms512m --add-opens=java.base/java.lang=ALL-UNNAMED",
+    "environmentProperties": {},
+    "skipTests": false,
+    "threads": "1C"
+  },
+  "profiles": {
+    "enabledProfiles": ["dev"],
+    "disabledProfiles": ["prod"]
+  },
+  "projectSettings": {
+    "rootDirectory": "crm-backend",
+    "pomFile": "crm-backend/pom.xml",
+    "modules": [
+      "crm-backend/crm-api-service",
+      "crm-backend/crm-customer-service", 
+      "crm-backend/crm-user-service",
+      "crm-backend/crm-gateway-service"
+    ]
+  }
+}

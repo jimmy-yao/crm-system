@@ -1,0 +1,43 @@
+{
+  "modules": [
+    {
+      "name": "crm-backend",
+      "type": "JAVA_MODULE",
+      "path": "$PROJECT_DIR$/crm-backend/crm-backend.iml",
+      "group": "crm-backend"
+    },
+    {
+      "name": "crm-api-service",
+      "type": "JAVA_MODULE", 
+      "path": "$PROJECT_DIR$/crm-backend/crm-api-service/crm-api-service.iml",
+      "group": "crm-backend"
+    },
+    {
+      "name": "crm-customer-service",
+      "type": "JAVA_MODULE",
+      "path": "$PROJECT_DIR$/crm-backend/crm-customer-service/crm-customer-service.iml", 
+      "group": "crm-backend"
+    },
+    {
+      "name": "crm-user-service",
+      "type": "JAVA_MODULE",
+      "path": "$PROJECT_DIR$/crm-backend/crm-user-service/crm-user-service.iml",
+      "group": "crm-backend"
+    },
+    {
+      "name": "crm-gateway-service", 
+      "type": "JAVA_MODULE",
+      "path": "$PROJECT_DIR$/crm-backend/crm-gateway-service/crm-gateway-service.iml",
+      "group": "crm-backend"
+    }
+  ],
+  "projectStructure": {
+    "projectSdk": {
+      "name": "JDK-21",
+      "type": "JavaSDK"
+    },
+    "projectLanguageLevel": "JDK_21_PREVIEW",
+    "projectCompilerOutput": "$PROJECT_DIR$/crm-backend/target/classes",
+    "excludeOutput": true
+  }
+}

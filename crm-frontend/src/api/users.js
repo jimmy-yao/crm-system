@@ -53,13 +53,12 @@ export function deleteUser(id) {
 }
 
 // 更新用户状态
-export function updateUserStatus(id, status) {
-  return request({
-    url: `/users/${id}/status`,
-    method: 'put',
-    params: { status }
-  })
-}
+// export function resetPassword(id) {
+//   return request({
+//     url: `/users/${id}/password/reset`,
+//     method: 'put'
+//   })
+// }
 
 // 为用户分配角色
 export function assignRoles(id, roleIds) {

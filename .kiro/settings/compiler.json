@@ -1,0 +1,59 @@
+{
+  "javac": {
+    "options": {
+      "DEBUGGING_INFO": true,
+      "GENERATE_NO_WARNINGS": false,
+      "DEPRECATION": true,
+      "ADDITIONAL_OPTIONS_STRING": "--enable-preview -Xlint:preview -parameters",
+      "MAXIMUM_HEAP_SIZE": 2048
+    },
+    "resourcePatterns": [
+      "!?*.java",
+      "!?*.form",
+      "!?*.class",
+      "!?*.groovy",
+      "!?*.scala",
+      "!?*.flex",
+      "!?*.kt",
+      "!?*.clj"
+    ]
+  },
+  "annotationProcessing": {
+    "enabled": true,
+    "obtainProcessorsFromClasspath": true,
+    "processorsPath": "",
+    "processors": [
+      "lombok.launch.AnnotationProcessorHider$AnnotationProcessor"
+    ],
+    "processModule": {
+      "crm-api-service": {
+        "enabled": true,
+        "processorsPath": "",
+        "processors": []
+      },
+      "crm-customer-service": {
+        "enabled": true,
+        "processorsPath": "",
+        "processors": []
+      },
+      "crm-user-service": {
+        "enabled": true,
+        "processorsPath": "",
+        "processors": []
+      },
+      "crm-gateway-service": {
+        "enabled": true,
+        "processorsPath": "",
+        "processors": []
+      }
+    }
+  },
+  "buildProcessHeapSize": 2048,
+  "buildProcessVMOptions": "--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED",
+  "compileInBackground": true,
+  "autoShowFirstErrorInEditor": true,
+  "displayNotificationPopup": true,
+  "enableAutomake": true,
+  "parallelCompilation": true,
+  "rebuildOnDependencyChange": true
+}

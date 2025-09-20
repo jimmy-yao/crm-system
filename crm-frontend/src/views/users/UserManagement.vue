@@ -138,9 +138,7 @@
 
       <template #footer>
         <el-button @click="showAddDialog = false">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="handleSubmit">
-          {{ editingUser ? '更新' : '创建' }}
-        </el-button>
+        <el-button type="primary" :loading="submitting" @click="handleSubmit">{{ editingUser ? '更新' : '创建' }}</el-button>
       </template>
     </el-dialog>
 
@@ -148,39 +146,19 @@
     <el-dialog v-model="showDetailDialog" title="用户详情" width="600px">
       <div v-if="selectedUser" class="user-detail">
         <el-descriptions :column="2" border>
-          <el-descriptions-item label="用户名">
-            {{ selectedUser.username }}
-          </el-descriptions-item>
-          <el-descriptions-item label="真实姓名">
-            {{ selectedUser.realName }}
-          </el-descriptions-item>
-          <el-descriptions-item label="邮箱">
-            {{ selectedUser.email || '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="手机号">
-            {{ selectedUser.phone || '-' }}
-          </el-descriptions-item>
+          <el-descriptions-item label="用户名">{{ selectedUser.username }}</el-descriptions-item>
+          <el-descriptions-item label="真实姓名">{{ selectedUser.realName }}</el-descriptions-item>
+          <el-descriptions-item label="邮箱">{{ selectedUser.email || '-' }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{ selectedUser.phone || '-' }}</el-descriptions-item>
           <el-descriptions-item label="状态">
-            <el-tag :type="selectedUser.status === 1 ? 'success' : 'danger'" size="small">
-              {{ selectedUser.status === 1 ? '启用' : '禁用' }}
-            </el-tag>
+            <el-tag :type="selectedUser.status === 1 ? 'success' : 'danger'" size="small">{{ selectedUser.status === 1 ? '启用' : '禁用' }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="最后登录">
-            {{ selectedUser.lastLoginTime ? formatDate(selectedUser.lastLoginTime) : '从未登录' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="创建时间" :span="2">
-            {{ formatDate(selectedUser.createdTime) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="更新时间" :span="2">
-            {{ formatDate(selectedUser.updatedTime) }}
-          </el-descriptions-item>
+          <el-descriptions-item label="最后登录">{{ selectedUser.lastLoginTime ? formatDate(selectedUser.lastLoginTime) : '从未登录' }}</el-descriptions-item>
+          <el-descriptions-item label="创建时间" :span="2">{{ formatDate(selectedUser.createdTime) }}</el-descriptions-item>
+          <el-descriptions-item label="更新时间" :span="2">{{ formatDate(selectedUser.updatedTime) }}</el-descriptions-item>
           <el-descriptions-item label="角色" :span="2">
-            <el-tag v-for="role in selectedUser.roles" :key="role.id" size="small" class="role-tag">
-              {{ role.roleName }}
-            </el-tag>
-            <span v-if="!selectedUser.roles || selectedUser.roles.length === 0">
-              未分配角色
-            </span>
+            <el-tag v-for="role in selectedUser.roles" :key="role.id" size="small" class="role-tag">{{ role.roleName }}</el-tag>
+            <span v-if="!selectedUser.roles || selectedUser.roles.length === 0">未分配角色</span>
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -191,18 +169,13 @@
       <div v-if="selectedUser">
         <p class="dialog-desc">为用户 "{{ selectedUser.realName }}" 分配角色：</p>
         <el-checkbox-group v-model="selectedRoleIds">
-          <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id" :disabled="role.status === 0">
-            {{ role.roleName }}
-            <span class="role-desc">{{ role.description }}</span>
-          </el-checkbox>
+          <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id" :disabled="role.status === 0">{{ role.roleName }}<span class="role-desc">{{ role.description }}</span></el-checkbox>
         </el-checkbox-group>
       </div>
 
       <template #footer>
         <el-button @click="showRoleDialog = false">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="handleRoleSubmit">
-          确定
-        </el-button>
+        <el-button type="primary" :loading="submitting" @click="handleRoleSubmit">确定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -282,21 +255,17 @@ const userRules = {
 const loadUsers = async () => {
   loading.value = true
   try {
-    let response
-    if (searchForm.keyword) {
-      response = await getUsers({ keyword: searchForm.keyword })
-    } else {
-      response = await getUsers()
+    const params = {
+      page: pagination.page,
+      size: pagination.size,
+      keyword: searchForm.keyword,
+      status: searchForm.status
     }
-    let users = response.data || []
+    const response = await getUsers(params)
+    const pageData = response.data.data || { list: [], total: 0 }
 
-    // 根据状态筛选
-    if (searchForm.status !== null) {
-      users = users.filter(user => user.status === searchForm.status)
-    }
-
-    userList.value = users
-    pagination.total = users.length
+    userList.value = pageData.list
+    pagination.total = pageData.total
   } catch (error) {
     console.error('加载用户列表失败:', error)
     ElMessage.error('加载用户列表失败')
@@ -307,8 +276,8 @@ const loadUsers = async () => {
 
 const loadRoles = async () => {
   try {
-    const response = await getRoles()
-    allRoles.value = response.data || []
+    const response = await getRoles() // This should also be paginated/filtered
+    allRoles.value = response.data || [] // This should be response.data.data.list
   } catch (error) {
     console.error('加载角色列表失败:', error)
     ElMessage.error('加载角色列表失败')
@@ -377,7 +346,7 @@ const handleStatusChange = async (user) => {
     await updateUser(user.id, { status: user.status })
     ElMessage.success('状态更新成功')
   } catch (error) {
-    console.error('更新状态失败:', error)
+    console.error('更新状态失败:', error) 
     ElMessage.error('状态更新失败')
     // 恢复原状态
     user.status = user.status === 1 ? 0 : 1
@@ -551,7 +520,7 @@ onMounted(() => {
     }
   }
 
-  .dialog-desc {
+    .dialog-desc {
     margin-bottom: 20px;
     color: var(--el-text-color-regular);
   }

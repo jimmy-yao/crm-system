@@ -36,6 +36,8 @@ services:
       - mysql
     networks:
       - crm-network
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   mysql_data:

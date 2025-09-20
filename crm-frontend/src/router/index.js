@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { getToken } from '@/utils/auth' // 导入 getToken
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -69,7 +68,7 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/views/error/NotFoundPage.vue'),
-    meta: { title: '页面不存在' }
+    meta: { title: '页面不存在', requiresAuth: false }
   }
 ]
 
@@ -78,38 +77,55 @@ const router = createRouter({
   routes
 })
 
-// 路由守卫
+// 全局前置路由守卫
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
 
   const userStore = useUserStore()
-  let token = userStore.token // 先从 Pinia store 获取
+  const hasToken = userStore.token
 
-  // 如果 Pinia store 中没有 token，但 Cookie 中有，则同步到 Pinia store
-  if (!token) {
-    const cookieToken = getToken()
-    if (cookieToken) {
-      userStore.token = cookieToken
-      token = cookieToken // 更新 token 变量
+  if (hasToken) {
+    // 如果已登录
+    if (to.path === '/login') {
+      // 如果要去登录页，则重定向到首页
+      next({ path: '/' })
+    } else {
+      // 如果要去其他页面
+      const hasUserInfo = userStore.userInfo
+      if (hasUserInfo) {
+        // 如果已有用户信息，则直接放行
+        next()
+      } else {
+        // 如果没有用户信息（例如刷新页面），则去获取
+        try {
+          await userStore.getUserInfo()
+          // 获取成功后，重新进入导航，使用replace避免历史记录中出现循环
+          next({ ...to, replace: true })
+        } catch (error) {
+          // 如果获取用户信息失败（例如token失效），则登出并重定向到登录页
+          console.error('获取用户信息失败:', error)
+          userStore.logout()
+          next('/login')
+        }
+      }
     }
-  }
-
-  if (to.meta.requiresAuth !== false && !token) {
-    // 需要登录但没有token，跳转到登录页
-    next('/login')
-  } else if (to.path === '/login' && token) {
-    // 已登录用户访问登录页，跳转到首页
-    next('/')
   } else {
-    // 设置页面标题
-    if (to.meta.title) {
-      document.title = `${to.meta.title} - CRM管理系统`
+    // 如果未登录
+    if (to.meta.requiresAuth) {
+      // 如果目标页面需要认证，则重定向到登录页
+      next('/login')
+    } else {
+      // 如果目标页面不需要认证，则直接放行
+      next()
     }
-    next()
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to) => {
+  // 设置页面标题
+  if (to.meta.title) {
+    document.title = `${to.meta.title} - CRM管理系统`
+  }
   NProgress.done()
 })
 

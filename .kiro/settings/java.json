@@ -1,0 +1,57 @@
+{
+  "projectJdk": {
+    "name": "JDK-21",
+    "version": "21",
+    "vendor": "Oracle Corporation",
+    "type": "JavaSDK"
+  },
+  "languageLevel": "JDK_21_PREVIEW",
+  "compilerConfiguration": {
+    "javacOptions": {
+      "additionalOptions": "--enable-preview -Xlint:preview",
+      "generateDebugInfo": true,
+      "reportDeprecation": true,
+      "generateNoWarnings": false
+    },
+    "annotationProcessing": {
+      "enabled": true,
+      "processors": [
+        "lombok.launch.AnnotationProcessorHider$AnnotationProcessor"
+      ]
+    }
+  },
+  "modules": [
+    {
+      "name": "crm-backend",
+      "type": "JAVA_MODULE",
+      "contentRoots": [
+        {
+          "url": "file://$PROJECT_DIR$/crm-backend",
+          "type": "SOURCE"
+        }
+      ],
+      "sourceFolders": [
+        "crm-backend/crm-api-service/src/main/java",
+        "crm-backend/crm-customer-service/src/main/java",
+        "crm-backend/crm-user-service/src/main/java",
+        "crm-backend/crm-gateway-service/src/main/java"
+      ],
+      "resourceFolders": [
+        "crm-backend/crm-api-service/src/main/resources",
+        "crm-backend/crm-customer-service/src/main/resources",
+        "crm-backend/crm-user-service/src/main/resources",
+        "crm-backend/crm-gateway-service/src/main/resources"
+      ],
+      "testSourceFolders": [
+        "crm-backend/crm-api-service/src/test/java",
+        "crm-backend/crm-customer-service/src/test/java",
+        "crm-backend/crm-user-service/src/test/java",
+        "crm-backend/crm-gateway-service/src/test/java"
+      ],
+      "excludeFolders": [
+        "crm-backend/target",
+        "crm-backend/*/target"
+      ]
+    }
+  ]
+}

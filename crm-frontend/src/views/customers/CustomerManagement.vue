@@ -240,14 +240,15 @@ const loadCustomers = async () => {
   try {
     let response
     if (searchForm.keyword) {
-      response = await getCustomers({ keyword: searchForm.keyword })
+      response = await searchCustomers(searchForm.keyword, pagination.page, pagination.size)
     } else {
-      response = await getCustomers()
+      response = await getCustomers(pagination.page, pagination.size)
     }
-    const customers = response.data || []
     
-    customerList.value = customers
-    pagination.total = customers.length
+    const pageData = response.data || { list: [], total: 0 }
+    
+    customerList.value = pageData.list
+    pagination.total = pageData.total
   } catch (error) {
     console.error('加载客户列表失败:', error)
     ElMessage.error('加载客户列表失败')
@@ -301,7 +302,7 @@ const handleDelete = async (customer) => {
     
     await deleteCustomer(customer.id)
     ElMessage.success('删除成功')
-    loadCustomers()
+    await loadCustomers()
   } catch (error) {
     if (error !== 'cancel') {
       console.error('删除客户失败:', error)
@@ -329,10 +330,11 @@ const handleSubmit = async () => {
     }
     
     showAddDialog.value = false
-    loadCustomers()
+    await loadCustomers()
   } catch (error) {
     console.error('提交失败:', error)
-    ElMessage.error('操作失败')
+    const message = error.response?.data?.message || '操作失败'
+    ElMessage.error(message)
   } finally {
     submitting.value = false
   }

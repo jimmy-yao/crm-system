@@ -25,7 +25,7 @@
 
         <el-form-item>
           <div class="login-options">
-            <el-checkbox v-model="rememberMe">记住密码</el-checkbox>
+            <span />
             <el-link type="primary" :underline="false" @click="showForgotPassword">忘记密码？</el-link>
           </div>
         </el-form-item>
@@ -152,7 +152,6 @@ const userStore = useUserStore()
 
 // 响应式数据
 const loading = ref(false)
-const rememberMe = ref(false)
 
 // 忘记密码相关
 const forgotPasswordVisible = ref(false)
@@ -254,14 +253,8 @@ const handleLogin = async () => {
     // 调用真实的登录API
     await userStore.login(loginForm)
 
-    // 记住密码
-    if (rememberMe.value) {
-      Cookies.set('username', loginForm.username, { expires: 7 })
-      Cookies.set('password', loginForm.password, { expires: 7 })
-    } else {
-      Cookies.remove('username')
-      Cookies.remove('password')
-    }
+    // 登录成功后，可以选择性地记住用户名
+    Cookies.set('username', loginForm.username, { expires: 7 })
 
     ElMessage.success('登录成功')
 
@@ -306,7 +299,7 @@ const sendCaptcha = async () => {
       return
     }
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s-]+\@[^\s-]+\.[^\s-]+$/
     if (!emailRegex.test(forgotPasswordForm.email)) {
       ElMessage.error('请输入正确的邮箱格式')
       return
@@ -380,12 +373,8 @@ const handleResetPassword = async () => {
 
 const loadRememberedCredentials = () => {
   const savedUsername = Cookies.get('username')
-  const savedPassword = Cookies.get('password')
-
-  if (savedUsername && savedPassword) {
+  if (savedUsername) {
     loginForm.username = savedUsername
-    loginForm.password = savedPassword
-    rememberMe.value = true
   }
 }
 

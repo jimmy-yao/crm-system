@@ -1,0 +1,31 @@
+{
+  "java": {
+    "indentOptions": {
+      "INDENT_SIZE": 4,
+      "CONTINUATION_INDENT_SIZE": 8,
+      "TAB_SIZE": 4,
+      "USE_TAB_CHARACTER": false,
+      "SMART_TABS": false,
+      "LABEL_INDENT_SIZE": 0,
+      "LABEL_INDENT_ABSOLUTE": false,
+      "USE_RELATIVE_INDENTS": false
+    },
+    "wrappingAndBraces": {
+      "KEEP_LINE_BREAKS": true,
+      "KEEP_FIRST_COLUMN_COMMENT": true,
+      "KEEP_CONTROL_STATEMENT_IN_ONE_LINE": true,
+      "KEEP_MULTIPLE_EXPRESSIONS_IN_ONE_LINE": false,
+      "KEEP_SIMPLE_BLOCKS_IN_ONE_LINE": false,
+      "KEEP_SIMPLE_METHODS_IN_ONE_LINE": false,
+      "KEEP_SIMPLE_CLASSES_IN_ONE_LINE": false
+    },
+    "javaFeatures": {
+      "USE_PREVIEW_FEATURES": true,
+      "ENABLE_PATTERN_MATCHING": true,
+      "ENABLE_RECORDS": true,
+      "ENABLE_SEALED_CLASSES": true,
+      "ENABLE_TEXT_BLOCKS": true,
+      "ENABLE_SWITCH_EXPRESSIONS": true
+    }
+  }
+}

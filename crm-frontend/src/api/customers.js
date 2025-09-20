@@ -1,22 +1,15 @@
 import request from '@/utils/request'
 
 // 获取客户列表
-export function getCustomers(params) {
+export function getCustomers(page = 1, size = 10, params = {}) {
   return request({
     url: '/customers',
     method: 'get',
-    params
+    params: { page, size, ...params }
   })
 }
 
-// 搜索客户
-export function searchCustomers(keyword) {
-  return request({
-    url: '/customers/search',
-    method: 'get',
-    params: { keyword }
-  })
-}
+
 
 // 获取客户详情
 export function getCustomer(id) {
@@ -49,5 +42,14 @@ export function deleteCustomer(id) {
   return request({
     url: `/customers/${id}`,
     method: 'delete'
+  })
+}
+
+// 搜索客户
+export function searchCustomers(keyword, page = 1, size = 10) {
+  return request({
+    url: '/customers/search',
+    method: 'get',
+    params: { keyword, page, size }
   })
 }

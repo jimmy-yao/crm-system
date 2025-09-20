@@ -1,0 +1,36 @@
+{
+  "java": {
+    "version": "21",
+    "sourceCompatibility": "21",
+    "targetCompatibility": "21",
+    "enablePreview": true,
+    "compilerArgs": [
+      "--enable-preview",
+      "-Xlint:preview"
+    ]
+  },
+  "maven": {
+    "version": "3.9.8",
+    "jvmArgs": [
+      "-Xmx2048m",
+      "-Xms512m",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.io=ALL-UNNAMED"
+    ],
+    "profiles": ["dev"],
+    "skipTests": false
+  },
+  "build": {
+    "autoCompile": true,
+    "incrementalCompile": true,
+    "parallelBuild": true
+  },
+  "runtime": {
+    "jvmArgs": [
+      "-Xmx1024m",
+      "-Xms256m",
+      "--enable-preview",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    ]
+  }
+}
